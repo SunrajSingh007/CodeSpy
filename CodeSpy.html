@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>CodeSpy</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+
+        :root {
+            --background-color: #050816;
+            --surface-color: #0f172a;
+            --card-color: rgba(15, 23, 42, 0.72);
+            --primary-text: #e2e8f0;
+            --secondary-text: #94a3b8;
+            --accent-color: #4eff91;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --gradient: linear-gradient(135deg, #4eff91, #00d4ff, #7c3aed);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top left, rgba(78,255,145,0.08), transparent 25%),
+                radial-gradient(circle at bottom right, rgba(0,212,255,0.08), transparent 25%),
+                var(--background-color);
+            color: var(--primary-text);
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            padding: 60px 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            animation: fadeIn 1s ease;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 58px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glowPulse 3s infinite alternate;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--secondary-text);
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        input {
+            flex: 1;
+            padding: 18px 22px;
+            border-radius: 18px;
+            border: 1px solid var(--border-color);
+            background: rgba(255,255,255,0.04);
+            color: var(--primary-text);
+            font-size: 15px;
+            outline: none;
+            transition: 0.35s ease;
+        }
+
+        input::placeholder {
+            color: var(--secondary-text);
+        }
+
+        input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 20px rgba(78,255,145,0.2);
+        }
+
+        button {
+            padding: 18px 28px;
+            border: none;
+            border-radius: 18px;
+            background: var(--gradient);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.35s ease;
+        }
+
+        button:hover {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 0 30px rgba(78,255,145,0.35);
+        }
+
+        #dashboard {
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 28px;
+            padding: 36px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.45);
+            animation: slideUp 0.8s ease;
+        }
+
+        #avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            display: block;
+            margin: 0 auto 24px;
+            border: 4px solid rgba(255,255,255,0.08);
+            object-fit: cover;
+            transition: 0.4s ease;
+            box-shadow: 0 0 35px rgba(78,255,145,0.18);
+        }
+
+        #avatar:hover {
+            transform: rotateY(12deg) scale(1.05);
+        }
+
+        #userName {
+            text-align: center;
+            font-size: 34px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        #userBio {
+            text-align: center;
+            color: var(--secondary-text);
+            max-width: 650px;
+            margin: 0 auto 34px;
+            line-height: 1.7;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 22px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 22px;
+            padding: 28px 22px;
+            text-align: center;
+            transition: 0.35s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 0 25px rgba(78,255,145,0.12);
+        }
+
+        .card h3 {
+            color: var(--secondary-text);
+            font-size: 14px;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card p {
+            font-size: 32px;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        #aiResult {
+            margin-top: 32px;
+            padding: 24px;
+            border-radius: 22px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            line-height: 1.8;
+            color: var(--primary-text);
+        }
+
+        #errorBox {
+            color: #ff6b81;
+            text-align: center;
+            margin-bottom: 18px;
+            font-weight: 600;
+        }
+
+        #loadingMsg {
+            text-align: center;
+            margin-top: 24px;
+            color: var(--accent-color);
+            font-size: 18px;
+            animation: pulse 1.2s infinite;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes glowPulse {
+            from { filter: drop-shadow(0 0 8px rgba(78,255,145,0.25)); }
+            to   { filter: drop-shadow(0 0 18px rgba(78,255,145,0.6)); }
+        }
+
+        @keyframes pulse {
+            0%   { opacity: 0.5; }
+            50%  { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        @media (max-width: 768px) {
+            .title { font-size: 42px; }
+            .search-box { flex-direction: column; }
+            button { width: 100%; }
+            #dashboard { padding: 24px; }
+            #userName { font-size: 28px; }
+            .card p { font-size: 26px; }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1 class="title">CodeSpy</h1>
+
+        <p class="subtitle">AI Powered GitHub Profile Analyzer</p>
+
+        <div class="search-box">
+            <input
+                type="text"
+                id="usernameInput"
+                placeholder="Enter GitHub username..."
+                onkeydown="if(event.key==='Enter') analyse()"
+            />
+            <button onclick="analyse()">Analyse</button>
+        </div>
+
+        <div id="errorBox"></div>
+
+        <div id="loadingMsg" style="display:none">
+            Analysing GitHub profile...
+        </div>
+
+        <div id="dashboard" style="display:none">
+
+            <img id="avatar" src="" alt="avatar" />
+
+            <h2 id="userName"></h2>
+
+            <p id="userBio"></p>
+
+            <div class="stats-row">
+                <div class="card">
+                    <h3>Repositories</h3>
+                    <p id="repoCount"></p>
+                </div>
+                <div class="card">
+                    <h3>Followers</h3>
+                    <p id="followers"></p>
+                </div>
+                <div class="card">
+                    <h3>Total Stars</h3>
+                    <p id="totalStars"></p>
+                </div>
+                <div class="card">
+                    <h3>Top Language</h3>
+                    <p id="topLanguage"></p>
+                </div>
+            </div>
+
+            <div id="aiResult"></div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        async function analyse() {
+
+            const username = document.getElementById('usernameInput').value.trim();
+
+            if (!username) return;
+
+            document.getElementById('errorBox').textContent = '';
+            document.getElementById('loadingMsg').style.display = 'block';
+            document.getElementById('dashboard').style.display = 'none';
+
+            try {
+
+                const response = await fetch(`https://api.github.com/users/${username}`);
+
+                if (!response.ok) {
+                    document.getElementById('errorBox').textContent = 'User not found!';
+                    document.getElementById('loadingMsg').style.display = 'none';
+                    return;
+                }
+
+                const user = await response.json();
+
+                const reposResponse = await fetch(`https://api.github.com/users/${username}/repos?per_page=100`);
+                const repos = await reposResponse.json();
+
+                fillDashboard(user, repos);
+
+            } catch (error) {
+                document.getElementById('errorBox').textContent = 'Something went wrong!';
+                document.getElementById('loadingMsg').style.display = 'none';
+            }
+        }
+
+
+        function fillDashboard(user, repos) {
+
+            document.getElementById('avatar').src = user.avatar_url;
+
+            document.getElementById('userBio').textContent = user.bio || 'No bio available';
+
+            document.getElementById('repoCount').textContent = user.public_repos;
+
+            document.getElementById('followers').textContent = user.followers;
+
+            document.getElementById('userName').innerHTML =
+                `<a href="${user.html_url}" target="_blank" style="color:inherit;text-decoration:none">
+                    ${user.name || user.login}
+                 </a>`;
+
+            const totalStars = repos.reduce((sum, repo) => sum + repo.stargazers_count, 0);
+            document.getElementById('totalStars').textContent = totalStars;
+
+            const langCount = {};
+            repos.forEach(repo => {
+                if (repo.language) {
+                    langCount[repo.language] = (langCount[repo.language] || 0) + 1;
+                }
+            });
+
+            const topLangs = Object.entries(langCount).sort((a, b) => b[1] - a[1]);
+            document.getElementById('topLanguage').textContent = topLangs.length > 0 ? topLangs[0][0] : 'N/A';
+
+            document.getElementById('loadingMsg').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+
+            analyseWithAI(user, repos);
+        }
+
+
+        async function analyseWithAI(user, repos) {
+
+            document.getElementById('aiResult').textContent = 'AI is analysing this developer profile...';
+
+            const topLanguages = Object.entries(
+                repos.reduce((acc, r) => {
+                    if (r.language) acc[r.language] = (acc[r.language] || 0) + 1;
+                    return acc;
+                }, {})
+            ).sort((a, b) => b[1] - a[1]).slice(0, 3).map(l => l[0]).join(', ');
+
+            const totalStars = repos.reduce((s, r) => s + r.stargazers_count, 0);
+
+            const prompt = `Analyse this GitHub profile and give a short developer summary:
+Name: ${user.name || user.login}
+Bio: ${user.bio || 'none'}
+Public Repos: ${user.public_repos}
+Followers: ${user.followers}
+Top Languages: ${topLanguages}
+Total Stars: ${totalStars}
+
+Write exactly 3 sections:
+DEVELOPER PERSONALITY TYPE
+(creative title + 1 sentence)
+
+STRENGTHS
+(2 bullet points starting with •)
+
+HONEST FEEDBACK
+(1 sentence of real advice)
+
+Be specific, not generic. Sound like a senior engineer.`;
+
+            try {
+
+                const API_KEY = 'AIzaSyDYLo4_xhApVq3nC8kK85A40Fjpg0ZrZt4';
+
+                const response = await fetch(
+                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${API_KEY}`,
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: prompt }] }]
+                        })
+                    }
+                );
+
+                const data = await response.json();
+                document.getElementById('aiResult').textContent = data.candidates[0].content.parts[0].text;
+
+            } catch (error) {
+                document.getElementById('aiResult').textContent = 'AI analysis unavailable right now.';
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>
